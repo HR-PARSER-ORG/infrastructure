@@ -1,0 +1,7 @@
+[submodule "application/lkparser"]
+	path = application/lkparser
+	url = git@github.com:HR-PARSER-ORG/lk-parser.git
+
+[submodule "application/lkuser"]
+	path = application/lkuser
+	url = git@github.com:HR-PARSER-ORG/lk-user.git
