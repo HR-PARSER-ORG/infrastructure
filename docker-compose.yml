@@ -11,7 +11,7 @@ services:
       PG_USER: ${PG_USER}
       PG_DATABASE: ${PG_DATABASE}
     volumes:
-      - ./application/backend:/symfony
+      - ./application/lk-user:/symfony
     container_name: ${PROJECT_NAME}-php-fpm
     depends_on:
       - postgres
