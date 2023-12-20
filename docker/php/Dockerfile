@@ -24,3 +24,5 @@ ENV APP_ENV=dev
 WORKDIR /var/www/app
 
 USER www
+
+CMD ["php-fpm"]

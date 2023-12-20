@@ -11,11 +11,29 @@ services:
       PG_USER: ${PG_USER}
       PG_DATABASE: ${PG_DATABASE}
     volumes:
-      - ./application/lk-user:/symfony
+      - ./application/lk-user:/lkuser
     container_name: ${PROJECT_NAME}-php-fpm
+    expose:
+      - "9001"
     depends_on:
       - postgres
-    working_dir: /symfony
+    working_dir: /lkuser
+
+  parser-fpm:
+    build:
+      context: ./docker/php
+    environment:
+      PG_PORT: ${PG_PORT}
+      PG_HOST: ${PG_HOST}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_USER: ${PG_USER}
+      PG_DATABASE: ${PG_DATABASE}
+    volumes:
+      - ./application/lk-parser:/parser
+    container_name: ${PROJECT_NAME}-parser-fpm
+    depends_on:
+      - postgres
+    working_dir: /parser
 
   postgres:
     image: postgres:13.0-alpine
@@ -35,28 +53,30 @@ services:
     environment:
       NGINX_HOST: ${NGINX_HOST}
       NGINX_PORT: ${NGINX_PORT}
-      NGINX_DIR: /symfony/public
+      NGINX_DIR: /lkuser/public
       PHP_FPM: php-fpm
+      PARSER_FPM: parser-fpm
       VIRTUAL_HOST: ${NGINX_HOST}
-    working_dir: /symfony
+    working_dir: /lkuser
     container_name: ${PROJECT_NAME}-nginx
     volumes:
       - ./docker/nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template
-      - ./application/backend:/symfony
+      - ./application/lk-user:/lkuser
+      - ./application/lk-parser:/parser
     depends_on:
       - php-fpm
     ports:
       - "80:80"
 
 
-  rabbitmq:
-    image: "rabbitmq:3-management"
-    container_name: ${PROJECT_NAME}-rabbitmq
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    volumes:
-      - ./docker/rabbitmq/data:/var/lib/rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RM_USER}
-      RABBITMQ_DEFAULT_PASS: ${RM_PASSWORD}
+#  rabbitmq:
+#    image: "rabbitmq:3-management"
+#    container_name: ${PROJECT_NAME}-rabbitmq
+#    ports:
+#      - "15672:15672"
+#      - "5672:5672"
+#    volumes:
+#      - ./docker/rabbitmq/data:/var/lib/rabbitmq
+#    environment:
+#      RABBITMQ_DEFAULT_USER: ${RM_USER}
+#      RABBITMQ_DEFAULT_PASS: ${RM_PASSWORD}

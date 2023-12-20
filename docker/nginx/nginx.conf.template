@@ -1,6 +1,11 @@
-upstream backend {
+upstream lkuser {
     server ${PHP_FPM}:9000;
 }
+
+upstream parser_user {
+    server ${PARSER_FPM}:9000;
+}
+
 server {
     server_name ${NGINX_HOST};
     listen ${NGINX_PORT};
@@ -18,10 +23,21 @@ server {
     }
 
     location ~ ^/index\.php(/|$) {
-        fastcgi_pass backend;
+        fastcgi_pass lkuser;
         fastcgi_split_path_info ^(.+\.php)(/.*)$;
         include fastcgi_params;
 
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        fastcgi_param REMOTE_ADDR $http_x_real_ip;
+
+        internal;
+    }
+
+    location ^~ /api/ {
+        fastcgi_pass parser_user;  # Используем upstream для нового приложения
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
 
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         fastcgi_param DOCUMENT_ROOT $realpath_root;
