@@ -13,8 +13,6 @@ services:
     volumes:
       - ./application/lk-user:/lkuser
     container_name: ${PROJECT_NAME}-php-fpm
-    expose:
-      - "9001"
     depends_on:
       - postgres
     working_dir: /lkuser
@@ -53,20 +51,24 @@ services:
     environment:
       NGINX_HOST: ${NGINX_HOST}
       NGINX_PORT: ${NGINX_PORT}
-      NGINX_DIR: /lkuser/public
+      NGINX_DIR_USER: /lkuser/public
+      NGINX_DIR_PARSER: /parser/public
       PHP_FPM: php-fpm
       PARSER_FPM: parser-fpm
       VIRTUAL_HOST: ${NGINX_HOST}
-    working_dir: /lkuser
+    working_dir: /
     container_name: ${PROJECT_NAME}-nginx
     volumes:
-      - ./docker/nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template
+      - ./docker/nginx/nginx.conf.template:/etc/nginx/nginx.conf
+      - ./docker/nginx/sites-available/:/etc/nginx/sites-available/
+      - ./docker/nginx/sites-available/:/etc/nginx/sites-enabled/
       - ./application/lk-user:/lkuser
       - ./application/lk-parser:/parser
     depends_on:
       - php-fpm
     ports:
       - "80:80"
+      - "8080:8080"
 
 
 #  rabbitmq:
