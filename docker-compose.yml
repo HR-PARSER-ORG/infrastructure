@@ -17,22 +17,6 @@ services:
       - postgres
     working_dir: /lkuser
 
-  parser-fpm:
-    build:
-      context: ./docker/php
-    environment:
-      PG_PORT: ${PG_PORT}
-      PG_HOST: ${PG_HOST}
-      PG_PASSWORD: ${PG_PASSWORD}
-      PG_USER: ${PG_USER}
-      PG_DATABASE: ${PG_DATABASE}
-    volumes:
-      - ./application/lk-parser:/parser
-    container_name: ${PROJECT_NAME}-parser-fpm
-    depends_on:
-      - postgres
-    working_dir: /parser
-
   postgres:
     image: postgres:13.0-alpine
     environment:
@@ -52,9 +36,7 @@ services:
       NGINX_HOST: ${NGINX_HOST}
       NGINX_PORT: ${NGINX_PORT}
       NGINX_DIR_USER: /lkuser/public
-      NGINX_DIR_PARSER: /parser/public
       PHP_FPM: php-fpm
-      PARSER_FPM: parser-fpm
       VIRTUAL_HOST: ${NGINX_HOST}
     working_dir: /
     container_name: ${PROJECT_NAME}-nginx
@@ -63,13 +45,10 @@ services:
       - ./docker/nginx/sites-available/:/etc/nginx/sites-available/
       - ./docker/nginx/sites-available/:/etc/nginx/sites-enabled/
       - ./application/lk-user:/lkuser
-      - ./application/lk-parser:/parser
     depends_on:
       - php-fpm
     ports:
       - "80:80"
-      - "8080:8080"
-
 
   rabbitmq:
     image: "rabbitmq:3-management"
