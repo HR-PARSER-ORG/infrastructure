@@ -1,0 +1,17 @@
+backend-container ?= parser-php-fpm
+frontend-container ?= parser-frontend
+
+up:
+	docker compose up -d --force-recreate --build
+
+ps:
+	docker compose ps -a
+
+logs:
+	docker compose logs
+
+exec-backend:
+	docker exec -it $(backend-container) sh
+
+exec-frontend:
+	docker exec -it $(frontend-container) sh

@@ -3,7 +3,7 @@ upstream lkuser {
 }
 
 server {
-    server_name parser.local;
+    server_name localhost;
     listen 80;
     index index.php;
 
@@ -15,6 +15,10 @@ server {
         fastcgi_param REQUEST_METHOD $request_method;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
+    }
+
+    location /build {
+        alias /lkuser/public/build;
     }
 
     location / {
