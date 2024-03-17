@@ -15,3 +15,12 @@ exec-backend:
 
 exec-frontend:
 	docker exec -it $(frontend-container) sh
+
+build-frontend:
+    docker exec -it $(frontend-container) npm run build
+
+build-backend:
+    docker exec -it $(backend-container) composer install
+
+build-prod:
+    up build-frontend build backend
