@@ -3,7 +3,7 @@ upstream lkuser {
 }
 
 server {
-    server_name localhost;
+    server_name http://45.90.35.14;
     listen 80;
     index index.php;
 
