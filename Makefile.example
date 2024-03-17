@@ -22,5 +22,4 @@ build-frontend:
 build-backend:
     docker exec -it ${backend-container} composer install
 
-build-prod:
-    up build-frontend build-backend
+build-prod: up build-frontend build-backend
