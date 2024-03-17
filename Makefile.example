@@ -11,16 +11,16 @@ logs:
 	docker compose logs
 
 exec-backend:
-	docker exec -it $(backend-container) sh
+	docker exec -it ${backend-container} sh
 
 exec-frontend:
-	docker exec -it $(frontend-container) sh
+	docker exec -it ${frontend-container} sh
 
 build-frontend:
-    docker exec -it $(frontend-container) npm run build
+    docker exec -it ${frontend-container} npm run build
 
 build-backend:
-    docker exec -it $(backend-container) composer install
+    docker exec -it ${backend-container} composer install
 
 build-prod:
     up build-frontend build-backend
