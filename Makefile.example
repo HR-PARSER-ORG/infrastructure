@@ -22,4 +22,7 @@ build-frontend:
 build-backend:
 	docker exec -it ${backend-container} composer install
 
-build-prod: up build-frontend build-backend
+migrate:
+    docker exec -it ${backend-container} app/console d:m:m
+
+build-prod: up build-frontend build-backend migrate
